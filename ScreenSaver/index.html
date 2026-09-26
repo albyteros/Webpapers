@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Various Marmots</title>
+<style>
+  html, body { margin: 0; height: 100vh; overflow: hidden; background: #000; }
+  img { position: fixed; width: 30vmin; }
+</style>
+</head>
+<body>
+<img id="m">
+<script>
+  const m = document.getElementById('m');
+  const imgs = [];
+  const swap = () => { if (imgs.length) m.src = imgs[Math.floor(Math.random() * imgs.length)]; };
+
+  // find 1.png, 2.png, 3.png… next to this file, stopping at the first missing number
+  (function probe(i) {
+    const t = new Image();
+    t.onload = () => { imgs.push(t.src); if (i === 1) swap(); probe(i + 1); };
+    t.src = `${i}.png`;
+  })(1);
+  let x = 0, y = 0, dx = 0.3, dy = 0.3;
+
+  function frame() {
+    const maxX = innerWidth - m.offsetWidth, maxY = innerHeight - m.offsetHeight;
+    x += dx; y += dy;
+    if (x < 0 || x > maxX) { dx = -dx; x = Math.max(0, Math.min(x, maxX)); swap(); }
+    if (y < 0 || y > maxY) { dy = -dy; y = Math.max(0, Math.min(y, maxY)); swap(); }
+    m.style.transform = `translate(${x}px, ${y}px)`;
+    requestAnimationFrame(frame);
+  }
+  frame();
+</script>
+</body>
+</html>
